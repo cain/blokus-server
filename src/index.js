@@ -12,7 +12,7 @@ mongoose.connect();
 const io = socketIo(http);
 
 io.on('connection', (socket) => {
-  console.log('USER CONNECTED');
+  console.log('USER CONNECTED', socket.id);
   socket.emit('connected');
 
   socket.on('block_select', (data) => {

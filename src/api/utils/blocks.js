@@ -1,18 +1,12 @@
 /*eslint-disable*/
 
+const teams = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
 
-export default (teams) => {
-  const arr = []
-
-  teams.forEach((t, i) => {
-    arr.push(blocks(t))
-  })
-  
-  return arr;
+const createBlocks = (team) => {
+  return blocks(team);
 }
 
-
-const blocks = (team) => [
+const blocks = (team) => {return [
   {
     id: 'i1',
     grid: {x: 1, y: 1},
@@ -61,4 +55,9 @@ const blocks = (team) => [
     y: 0,
     team
   }
-]
+]}
+
+module.exports = {
+  createBlocks,
+  teams
+}
