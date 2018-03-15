@@ -3,8 +3,8 @@ const controller = require('../../controllers/room.controller');
 
 const router = express.Router();
 
-router.post('/create', controller.create);
-router.post('/join/:id', controller.join);
+router.get('/create', controller.create);
+router.get('/join/:id', controller.join);
 
 
 module.exports = router;

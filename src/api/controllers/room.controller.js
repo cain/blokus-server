@@ -1,5 +1,6 @@
 const Room = require('../models/room.model');
 const blocks = require('../utils/blocks');
+const { roomFull, notFound } = require('../middlewares/error');
 
 /**
  * Create a new room
@@ -26,25 +27,30 @@ exports.create = async (req, res, next) => {
 
 
 /**
- * Join a room
+ * Join a roo
  * @public
  */
 exports.join = async (req, res, next) => {
   try {
-    const selectedRoom = await Room.findOne({ _id: req.params.id });
+    const selectedRoom = await Room.findOne({ _id: req.params.id }, (err, room) => {
+      if (err) {
+        return notFound(req, res, next);
+      }
+    });
 
     if (!selectedRoom) {
       // doesn't exist
     }
     const { players } = selectedRoom;
-    if (players.length === 4) {
-      // its full
+    const userId = players[players.length - 1]._id
+    if (players.length > 3 && players.indexOf(x => x._id === userId) === -1) {
+      return roomFull(req, res, next);
     }
     await selectedRoom.players.push({
       team: blocks.teams[players.length],
     });
     await selectedRoom.save();
-    res.json({ room: selectedRoom, userId: players[players.length - 1]._id });
+    return res.json({ room: selectedRoom, userId});
   } catch (e) {
     next(e);
   }

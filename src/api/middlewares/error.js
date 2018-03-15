@@ -61,3 +61,16 @@ exports.notFound = (req, res, next) => {
   });
   return handler(err, req, res);
 };
+
+/**
+ * Catch 404 and forward to error handler
+ * @public
+ */
+exports.roomFull = (req, res, next) => {
+  const err = new APIError({
+    message: 'The current room is full',
+    status: httpStatus.FORBIDDEN,
+  });
+  console.log(httpStatus);
+  return handler(err, req, res);
+};
