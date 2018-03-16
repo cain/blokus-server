@@ -36,13 +36,14 @@ exports.join = async (req, res, next) => {
       if (err) {
         return notFound(req, res, next);
       }
+      return room;
     });
 
     if (!selectedRoom) {
       // doesn't exist
     }
     const { players } = selectedRoom;
-    const userId = players[players.length - 1]._id
+    const userId = players[players.length - 1]._id;
     if (players.length > 3 && players.indexOf(x => x._id === userId) === -1) {
       return roomFull(req, res, next);
     }
@@ -50,8 +51,8 @@ exports.join = async (req, res, next) => {
       team: blocks.teams[players.length],
     });
     await selectedRoom.save();
-    return res.json({ room: selectedRoom, userId});
+    return res.json({ room: selectedRoom, userId });
   } catch (e) {
-    next(e);
+    return next(e);
   }
 };
