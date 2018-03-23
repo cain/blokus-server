@@ -1,4 +1,6 @@
-function sockets(io) {
+const controller = require('../controllers/room.controller');
+
+module.exports = function sockets(io) {
   io.on('connection', (socket) => {
     console.log('USER CONNECTED', socket.id);
     socket.emit('connected');
@@ -11,8 +13,7 @@ function sockets(io) {
       socket.broadcast.emit('blockMove', {
         block: data.block,
       });
+      controller.moveBock(data.block);
     });
   });
-}
-
-module.exports = sockets;
+};

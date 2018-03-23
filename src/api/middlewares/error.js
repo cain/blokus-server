@@ -71,6 +71,5 @@ exports.roomFull = (req, res, next) => {
     message: 'The current room is full',
     status: httpStatus.FORBIDDEN,
   });
-  console.log(httpStatus);
   return handler(err, req, res);
 };
