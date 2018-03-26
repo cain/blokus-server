@@ -5,15 +5,15 @@ module.exports = function sockets(io) {
     console.log('USER CONNECTED', socket.id);
     socket.emit('connected');
 
-    socket.on('block_select', (data) => {
-      console.log('block move', data.block);
+    socket.on('block_select', () => {
+
     });
     socket.on('block_move', (data) => {
-      console.log('block move', data.block._id);
-      socket.broadcast.emit('blockMove', {
-        block: data.block,
+      controller.moveBlock(data.roomId, data.block, data.userId).then((res) => {
+        socket.broadcast.emit('blockMove', {
+          block: res,
+        });
       });
-      controller.moveBock(data.block);
     });
   });
 };

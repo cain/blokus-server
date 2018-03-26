@@ -59,7 +59,7 @@ exports.join = async (req, res, next) => {
 
     // if userId is sent, and is already a player
     if (userId && players.find(x => `${x._id}` === userId)) {
-      return res.json({ room: selectedRoom });
+      return res.json({ room: selectedRoom, player: players.find(x => `${x._id}` === userId) });
     }
 
     // room only allows 4 players
@@ -77,8 +77,39 @@ exports.join = async (req, res, next) => {
       ...blocks.createBlocks(selectedRoom.players[selectedRoom.players.length - 1].team),
     );
     await selectedRoom.save();
-    return res.json({ room: selectedRoom, userId: players[players.length - 1]._id });
+    return res.json({ room: selectedRoom, player: players[players.length - 1] });
   } catch (e) {
     return next(e);
+  }
+};
+
+/**
+ * Move a block in a room
+ * @public
+ */
+exports.moveBlock = async (roomId, blockMoved, userId) => {
+  try {
+    const selectedRoom = await Room.findOne({ _id: roomId }, (err, room) => {
+      if (err) {
+        // do something
+      }
+      return room;
+    });
+    const { players } = selectedRoom;
+    // if userId is sent, and is already a player
+    if (!players.find(x => `${x._id}` === userId)) {
+      // do something
+    }
+    // add the new player
+    const blockIndex = selectedRoom.blocks.findIndex(x => `${x._id}` === blockMoved._id);
+    const { x, y } = blockMoved;
+    selectedRoom.blocks[blockIndex].x = x;
+    selectedRoom.blocks[blockIndex].y = y;
+
+    await selectedRoom.save();
+    return selectedRoom;
+  } catch (e) {
+    // do something
+    return '';
   }
 };
