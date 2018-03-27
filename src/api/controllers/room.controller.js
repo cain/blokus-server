@@ -100,7 +100,8 @@ exports.moveBlock = async (roomId, blockMoved, userId) => {
     if (!players.find(x => `${x._id}` === userId)) {
       // do something
     }
-    // add the new player
+
+    // find block thats changed and change the values
     const blockIndex = selectedRoom.blocks.findIndex(x => `${x._id}` === blockMoved._id);
     const { x, y } = blockMoved;
     selectedRoom.blocks[blockIndex].x = x;
