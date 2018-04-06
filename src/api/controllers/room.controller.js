@@ -19,6 +19,19 @@ exports.get = async (req, res, next) => {
     return next(e);
   }
 };
+
+/**
+ * Get ALL rooms
+ * @public
+ */
+exports.getAll = async (req, res, next) => {
+  try {
+    const rooms = await Room.find({});
+    return res.json({ rooms });
+  } catch (e) {
+    return next(e);
+  }
+};
 /**
  * Create a new room
  * @public
