@@ -121,7 +121,7 @@ exports.moveBlock = async (roomId, blockMoved, userId) => {
     selectedRoom.blocks[blockIndex].y = y;
 
     await selectedRoom.save();
-    return selectedRoom;
+    return selectedRoom.blocks[blockIndex];
   } catch (e) {
     // do something
     return '';
