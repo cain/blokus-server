@@ -15,7 +15,7 @@ const player = new mongoose.Schema({
     type: String,
     enum: blocks.teams,
   },
-});
+}, { timestamps: true });
 
 const block = new mongoose.Schema({
   grid: Object,
@@ -32,11 +32,16 @@ const block = new mongoose.Schema({
  * Room Schema
  * @private
  */
-const roomSchema = new mongoose.Schema({
-  players: [player],
-  blocks: [block],
-});
-
+const roomSchema = new mongoose.Schema(
+  {
+    name: String,
+    players: [player],
+    blocks: [block],
+  },
+  {
+    timestamps: true,
+  });
 
 const Room = mongoose.model('Room', roomSchema);
+
 module.exports = Room;

@@ -3,7 +3,7 @@ const controller = require('../../controllers/room.controller');
 
 const router = express.Router();
 
-router.get('/create', controller.create);
+router.post('/create', controller.create);
 router.get('/join/:id', controller.join);
 router.get('/get/:id', controller.get);
 router.get('/getAll', controller.getAll);
