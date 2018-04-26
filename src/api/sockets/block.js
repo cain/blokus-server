@@ -13,6 +13,15 @@ module.exports = function sockets(io) {
         });
       });
     });
+
+    socket.on('block_edit', (data) => {
+      console.log('block edit')
+      controller.editBlock(data.roomId, data.block, data.userId).then((res) => {
+        socket.broadcast.emit('blockEdit', {
+          block: res,
+        });
+      });
+    });
     socket.on('disconnect', () => {
       console.log('user disconnected');
     });

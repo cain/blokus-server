@@ -127,3 +127,29 @@ exports.moveBlock = async (roomId, blockMoved, userId) => {
     return '';
   }
 };
+
+
+/**
+ * Edit a block in a room
+ * @public
+ */
+exports.editBlock = async (roomId, editedBlock, userId) => {
+  try {
+    const selectedRoom = await Room.findOne({ _id: roomId }, (err, room) => {
+      if (err) {
+        // do something
+      }
+      return room;
+    });
+
+    // find block thats changed and change the values
+    const blockIndex = selectedRoom.blocks.findIndex(x => `${x._id}` === editedBlock._id);
+    selectedRoom.blocks[blockIndex] = editedBlock;
+
+    await selectedRoom.save();
+    return selectedRoom.blocks[blockIndex];
+  } catch (e) {
+    // do something
+    return '';
+  }
+};
