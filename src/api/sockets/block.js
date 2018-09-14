@@ -29,15 +29,24 @@ module.exports = function sockets(io) {
         io.to(`${socketId}`).emit('roomJoined', { room, player, status: 'select' });
       });
     });
-    socket.on('player_connect', ({ roomId, userId }) => {
-      roomController.playerSelect(roomId, userId).then(({ room, player }) => {
-        socket.broadcast.emit('playerJoined', {
-          room,
-          player,
+    socket.on('player_connect', ({ roomId, userId, colour, nickName }) => {
+      roomController.playerSelect(roomId, userId, colour, nickName)
+        .then(({ room, players, player }) => {
+
+        // let the server know someones joined
+          socket.broadcast.emit('playerJoined', {
+            room,
+            players,
+          });
+
+          // tell the user they are ready
+          io.to(`${socketId}`).emit('roomJoined',
+            {
+              room, player, players, status: 'joined',
+            },
+          );
+          // io.to(`${socketId}`).emit('blockData', { blocks: room.blocks });
         });
-        io.to(`${socketId}`).emit('roomJoined', { room, player, status: 'joined' });
-        // io.to(`${socketId}`).emit('blockData', { blocks: room.blocks });
-      });
     });
     socket.on('disconnect', () => {
       console.log('user disconnected');

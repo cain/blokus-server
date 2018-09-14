@@ -132,9 +132,34 @@ exports.moveBlock = async (roomId, blockMoved, userId) => {
   }
 };
 
+/**
+ * Move a block in a room
+ * @public
+ */
+exports.playerSelect = async (roomId, userId, team, nickname) => {
+  try {
+    const selectedRoom = await Room.findOne({ _id: roomId }, (err, room) => {
+      if (err) {
+        // do something
+      }
+      return room;
+    });
+    const { players } = selectedRoom;
+    const player = players.find(x => `${x._id}` === userId);
+    player.name = nickname;
+    player.team = blocks.teams[team];
+
+    await selectedRoom.save();
+
+    return { room: selectedRoom, player, players };
+  } catch (e) {
+    // do something
+    return '';
+  }
+};
 
 /**
- * Edit a block in a room
+ * Edit a block in a room (flip, rotate)
  * @public
  */
 exports.editBlock = async (roomId, editedBlock, userId) => {
