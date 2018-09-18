@@ -75,25 +75,15 @@ exports.join = async (roomId, userId) => {
     // if userId is sent, and is already a player
     if (player) {
       // return res.json({ room: selectedRoom, player: players.find(x => `${x._id}` === userId) });
-      return { room: selectedRoom, player, status: 'joined' }
+      if (player.team) return { room: selectedRoom, player, status: 'joined' };
+      return { room: selectedRoom, player, status: 'select' };
     }
-
-    // room only allows 4 players
-    if (players.length > 3) {
-      return { room: selectedRoom, status: 'full' }
-    }
-
     // add the new player
     // await selectedRoom.players.push({
-    //   team: blocks.teams[players.length],
     // });
 
-    // // push new player blocks into room
-    // await selectedRoom.blocks.push(
-    //   ...blocks.createBlocks(selectedRoom.players[selectedRoom.players.length - 1].team),
-    // );
-    // await selectedRoom.save();
-    return { room: selectedRoom, player: players[players.length - 1] };
+    await selectedRoom.save();
+    return { room: selectedRoom, player: selectedRoom.players.slice(-1).pop(), status: 'select' };
   } catch (e) {
     console.log(e);
     return next(e);
@@ -108,7 +98,7 @@ exports.moveBlock = async (roomId, blockMoved, userId) => {
   try {
     const selectedRoom = await Room.findOne({ _id: roomId }, (err, room) => {
       if (err) {
-        // do something
+        throw new Error(err);
       }
       return room;
     });
@@ -133,27 +123,39 @@ exports.moveBlock = async (roomId, blockMoved, userId) => {
 };
 
 /**
- * Move a block in a room
+ * Player selection (nickname, team)
  * @public
  */
 exports.playerSelect = async (roomId, userId, team, nickname) => {
   try {
     const selectedRoom = await Room.findOne({ _id: roomId }, (err, room) => {
       if (err) {
-        // do something
+        throw new Error(err);
       }
       return room;
     });
     const { players } = selectedRoom;
     const player = players.find(x => `${x._id}` === userId);
+
+    if (!team || !nickname) throw new Error('Select a team or name');
+    console.log(nickname, team, players);
+    if (players.find(x => `${x.team}` === team) || players.find(x => `${x.name}` === nickname)) {
+      throw new Error('Name or team is in use');
+    }
+
+    // enter team name
     player.name = nickname;
     player.team = blocks.teams[team];
-
+    // push new player blocks into room
+    await selectedRoom.blocks.push(
+      ...blocks.createBlocks(player.team),
+    );
     await selectedRoom.save();
 
     return { room: selectedRoom, player, players };
   } catch (e) {
     // do something
+    console.log('ERROR', e);
     return '';
   }
 };

@@ -26,13 +26,17 @@ module.exports = function sockets(io) {
     socket.on('room_connect', ({ roomId, userId }) => {
       // status can be: joined, select, full
       roomController.join(roomId, userId).then(({ room, player, status }) => {
-        io.to(`${socketId}`).emit('roomJoined', { room, player, status: 'select' });
+        io.to(`${socketId}`).emit('roomJoined', { room, player, status });
       });
     });
-    socket.on('player_connect', ({ roomId, userId, colour, nickName }) => {
+    socket.on('player_connect', ({
+      roomId,
+      userId,
+      colour,
+      nickName,
+    }) => {
       roomController.playerSelect(roomId, userId, colour, nickName)
         .then(({ room, players, player }) => {
-
         // let the server know someones joined
           socket.broadcast.emit('playerJoined', {
             room,
