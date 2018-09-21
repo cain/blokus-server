@@ -79,11 +79,8 @@ exports.join = async (roomId, userId) => {
       return { room: selectedRoom, player, status: 'select' };
     }
     // add the new player
-    // await selectedRoom.players.push({
-    // });
-
-    await selectedRoom.save();
-    return { room: selectedRoom, player: selectedRoom.players.slice(-1).pop(), status: 'select' };
+    selectedRoom.players.push({});
+    return await selectedRoom.save().then(room => ({ room, player: room.players[room.players.length - 1], status: 'select' }));
   } catch (e) {
     console.log(e);
     return next(e);
